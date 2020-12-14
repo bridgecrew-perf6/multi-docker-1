@@ -1,0 +1,24 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t deeptinair/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true USERNAME/react-test npm test
+
+after_success:
+  - docker build -t deeptinair/multi-client ./client
+  - docker build -t deeptinair/multi-nginx ./nginx
+  - docker build -t deeptinair/multi-server ./server
+  - docker build -t deeptinair/multi-worker ./worker
+  # Log into the DOCKER CLI
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "DOCKER_ID" --password-stdin
+
+  # Take those images and push them to docker hub
+  - docker push deeptinair/multi-client
+  - docker push deeptinair/multi-nginx
+  - docker push deeptinair/multi-server
+  - docker push deeptinair/multi-worker
