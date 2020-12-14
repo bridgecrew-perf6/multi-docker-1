@@ -5,8 +5,8 @@ services:
 before_install:
   - docker build -t deeptinair/react-test -f ./client/Dockerfile.dev ./client
 
-# script:
-#   - docker run deeptinair/react-test npm test -- --coverage
+script:
+  - docker run deeptinair/react-test npm test -- --coverage
 
 after_success:
   - docker build -t deeptinair/multi-client ./client
